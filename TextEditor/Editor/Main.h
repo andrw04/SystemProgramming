@@ -16,7 +16,7 @@ int windowCount = 1;
 struct WindowData {
     std::wstring windowText;
     COLORREF textColor = RGB(0, 0, 0);
-    COLORREF bgColor = RGB(255, 255, 255);
+    COLORREF bgColor = RGB(255, 0, 255);
     HBRUSH hEditBgBrush = NULL;
     HBRUSH hEditTextBrush = NULL;
     HFONT hFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
