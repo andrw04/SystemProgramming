@@ -8,7 +8,6 @@
 #include <TlHelp32.h>
 #include "MemoryViewer.h"
 #include <windows.h>
-#include <tlhelp32.h>
 
 
 int UpdateProcessList() {
