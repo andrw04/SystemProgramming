@@ -3,6 +3,7 @@
 #include <fstream>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
+#include <filesystem>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -13,6 +14,7 @@ int port = 8888;
 const short BUFFER_SIZE = 1024;
 std::string recipient_folder = "C:\\recipientfiles\\";
 std::string sender_folder = "C:\\senderfiles\\";
+std::string working_directory;
 
 int send_file() {
 	// Key variables for all program
@@ -67,8 +69,13 @@ int send_file() {
 		cout << "Connection established SUCCESSFULLY. Ready to send a message to Server" << endl;
 
 	std::string filename;
-	std::cin >> filename;
-	std::string path = sender_folder + filename;
+	std::string path;
+	do {
+		cout << "Enter filename" << endl;
+		std::cin >> filename;
+		path = sender_folder + filename;
+
+	} while (!filesystem::exists(path) && !filesystem::is_regular_file(path));
 
 	send(сlientSocket, filename.c_str(), filename.size(), 0);
 
@@ -222,16 +229,34 @@ int get_file() {
 	closesocket(serverSocket);
 	WSACleanup();
 
-	std::cout << "File" << filename << " received successfully." << std::endl;
+	std::cout << "File " << filename << " received successfully." << std::endl;
 
 	return 0;
 }
 
+void list_files() {
+	cout << "List all files in " << working_directory << endl;
+	for (const auto& entry : std::filesystem::directory_iterator(working_directory)) {
+		if (filesystem::is_regular_file(entry.path())) {
+			cout << entry.path().filename() << endl;
+		}
+	}
+}
+
 int main() {
+	setlocale(LC_ALL, "ru");
+
+	do {
+		cout << "Enter path to working directory" << endl;
+		cin >> working_directory;
+	} while (!filesystem::exists(working_directory) && !filesystem::is_directory(working_directory));
+
+
 	while (true) {
 		int choice;
 		cout << "1) Get File" << endl;
 		cout << "2) Send File" << endl;
+		cout << "3) List all files in directory" << endl;
 		cin >> choice;
 
 		switch (choice) {
@@ -240,6 +265,9 @@ int main() {
 			break;
 		case 2:
 			send_file();
+			break;
+		case 3:
+			list_files();
 			break;
 		}
 	}
