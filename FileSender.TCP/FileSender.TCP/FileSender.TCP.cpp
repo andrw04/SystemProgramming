@@ -12,8 +12,6 @@ using namespace std;
 char ip[10] = "127.0.0.1";
 int port = 8888;
 const short BUFFER_SIZE = 1024;
-std::string recipient_folder = "C:\\recipientfiles\\";
-std::string sender_folder = "C:\\senderfiles\\";
 std::string working_directory;
 
 int send_file() {
@@ -73,8 +71,7 @@ int send_file() {
 	do {
 		cout << "Enter filename" << endl;
 		std::cin >> filename;
-		path = sender_folder + filename;
-
+		path = working_directory + filename;
 	} while (!filesystem::exists(path) && !filesystem::is_regular_file(path));
 
 	send(сlientSocket, filename.c_str(), filename.size(), 0);
@@ -205,7 +202,7 @@ int get_file() {
 	}
 
 	std::string filename(filenameBuffer, filenameBytesReceived);
-	std::string path = recipient_folder + filename;
+	std::string path = working_directory + filename;
 
 	char buffer[BUFFER_SIZE];
 	int bytesReceived;
